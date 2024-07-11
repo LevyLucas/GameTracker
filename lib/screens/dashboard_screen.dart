@@ -91,99 +91,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: DropdownButtonFormField<String>(
-                        value: _selectedGenre,
-                        hint: Text('Select Genre'),
-                        items: _genres.map((genre) {
-                          return DropdownMenuItem<String>(
-                            value: genre['id'].toString(),
-                            child: Text(genre['name']),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedGenre = value;
-                          });
-                        },
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                            vertical: 8.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'Min Score',
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                            vertical: 8.0,
-                          ),
-                        ),
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          setState(() {
-                            _minScore = double.tryParse(value);
-                          });
-                        },
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'Max Score',
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                            vertical: 8.0,
-                          ),
-                        ),
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          setState(() {
-                            _maxScore = double.tryParse(value);
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () => _selectDate(context, true),
-                        child: InputDecorator(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: DropdownButtonFormField<String>(
+                          value: _selectedGenre,
+                          hint: Text('Genre'),
+                          items: _genres.map((genre) {
+                            return DropdownMenuItem<String>(
+                              value: genre['id'].toString(),
+                              child: Text(genre['name']),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedGenre = value;
+                            });
+                          },
                           decoration: InputDecoration(
-                            labelText: 'Start Date',
                             filled: true,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(
@@ -194,24 +126,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               vertical: 8.0,
                             ),
                           ),
-                          child: Text(
-                            _startDate != null
-                                ? DateFormat.yMd().format(_startDate!)
-                                : 'Select date',
-                            style: TextStyle(
-                              color: Colors.black54,
-                            ),
-                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: InkWell(
-                        onTap: () => _selectDate(context, false),
-                        child: InputDecorator(
+                      SizedBox(width: 10),
+                      Flexible(
+                        child: TextFormField(
                           decoration: InputDecoration(
-                            labelText: 'End Date',
+                            labelText: 'Min Score',
                             filled: true,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(
@@ -222,55 +143,136 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               vertical: 8.0,
                             ),
                           ),
-                          child: Text(
-                            _endDate != null
-                                ? DateFormat.yMd().format(_endDate!)
-                                : 'Select date',
-                            style: TextStyle(
-                              color: Colors.black54,
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            setState(() {
+                              _minScore = double.tryParse(value);
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Flexible(
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'Max Score',
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 8.0,
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            setState(() {
+                              _maxScore = double.tryParse(value);
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: InkWell(
+                          onTap: () => _selectDate(context, true),
+                          child: InputDecorator(
+                            decoration: InputDecoration(
+                              labelText: 'Start Date',
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16.0,
+                                vertical: 8.0,
+                              ),
+                            ),
+                            child: Text(
+                              _startDate != null
+                                  ? DateFormat.yMd().format(_startDate!)
+                                  : 'Select date',
+                              style: TextStyle(
+                                color: Colors.black54,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    Provider.of<GameProvider>(context, listen: false).fetchGames(
-                      genreId: _selectedGenre != null
-                          ? int.parse(_selectedGenre!)
-                          : null,
-                      minScore: _minScore,
-                      maxScore: _maxScore,
-                      startDate: _startDate,
-                      endDate: _endDate,
-                    );
-                  },
-                  child: Text('Search'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueGrey[900],
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 24.0,
-                      vertical: 12.0,
-                    ),
-                    textStyle: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                      SizedBox(width: 10),
+                      Flexible(
+                        child: InkWell(
+                          onTap: () => _selectDate(context, false),
+                          child: InputDecorator(
+                            decoration: InputDecoration(
+                              labelText: 'End Date',
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16.0,
+                                vertical: 8.0,
+                              ),
+                            ),
+                            child: Text(
+                              _endDate != null
+                                  ? DateFormat.yMd().format(_endDate!)
+                                  : 'Select date',
+                              style: TextStyle(
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      Provider.of<GameProvider>(context, listen: false).fetchGames(
+                        genreId: _selectedGenre != null
+                            ? int.parse(_selectedGenre!)
+                            : null,
+                        minScore: _minScore,
+                        maxScore: _maxScore,
+                        startDate: _startDate,
+                        endDate: _endDate,
+                      );
+                    },
+                    child: Text('Search'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueGrey[900],
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 12.0,
+                      ),
+                      textStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: Consumer<GameProvider>(
+            Consumer<GameProvider>(
               builder: (context, gameProvider, child) {
                 if (gameProvider.games.isEmpty) {
                   return Center(child: Text('No games found'));
                 } else {
                   return ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                     itemCount: gameProvider.games.length,
                     itemBuilder: (context, index) {
                       final game = gameProvider.games[index];
@@ -334,8 +336,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 }
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: userId != null
           ? FloatingActionButton(
