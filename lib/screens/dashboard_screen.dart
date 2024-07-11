@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'add_edit_game_screen.dart';
 import 'game_details_screen.dart';
 import 'recent_reviews_screen.dart';
+import 'manage_genres_screen.dart';
 import '../providers/game_provider.dart';
 import '../providers/user_provider.dart';
 
@@ -36,10 +37,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   context,
                   MaterialPageRoute(builder: (context) => RecentReviewsScreen()),
                 );
+              } else if (value == 'manage_genres') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ManageGenresScreen()),
+                );
               }
             },
             itemBuilder: (BuildContext context) {
-              return {'Logout', 'Recent Reviews'}.map((String choice) {
+              return {'Logout', 'Recent Reviews', 'Manage Genres'}.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice.toLowerCase().replaceAll(' ', '_'),
                   child: Text(choice),

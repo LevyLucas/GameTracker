@@ -16,13 +16,13 @@ class GameDetailsScreen extends StatefulWidget {
 
 class _GameDetailsScreenState extends State<GameDetailsScreen> {
   Map<String, dynamic>? gameDetails;
+  List<Map<String, dynamic>>? gameGenres;
   late Future<void> _loadGameDetailsFuture;
 
   @override
   void initState() {
     super.initState();
     _loadGameDetailsFuture = _loadGameDetails();
-    Provider.of<ReviewProvider>(context, listen: false).fetchReviews(widget.gameId);
   }
 
   Future<void> _loadGameDetails() async {
@@ -33,9 +33,11 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
       where: 'id = ?',
       whereArgs: [widget.gameId],
     );
+    final genres = await dbHelper.getGameGenres(widget.gameId);
     if (result.isNotEmpty) {
       setState(() {
         gameDetails = result.first;
+        gameGenres = genres;
       });
     }
   }
@@ -81,6 +83,11 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                         'Release Date: ${gameDetails!['release_date']}',
                         style: TextStyle(fontSize: 16),
                       ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Genres: ${gameGenres?.map((genre) => genre['name']).join(', ') ?? 'None'}',
+                        style: TextStyle(fontSize: 16),
+                      ),
                     ],
                   ),
                 ),
@@ -106,7 +113,8 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                           return ListTile(
                             title: Text('Score: ${review['score']}'),
                             subtitle: Text(review['description']),
-                            trailing: userId != null && userId == review['user_id']
+                            trailing: userId != null &&
+                                    userId == review['user_id']
                                 ? Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -116,7 +124,8 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) => AddReviewScreen(
+                                              builder: (context) =>
+                                                  AddReviewScreen(
                                                 review: review,
                                                 gameId: widget.gameId,
                                               ),
@@ -127,7 +136,8 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                                       IconButton(
                                         icon: Icon(Icons.delete),
                                         onPressed: () {
-                                          Provider.of<ReviewProvider>(context, listen: false)
+                                          Provider.of<ReviewProvider>(context,
+                                                  listen: false)
                                               .deleteReview(review['id']);
                                         },
                                       ),
@@ -151,7 +161,8 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AddReviewScreen(gameId: widget.gameId),
+                    builder: (context) =>
+                        AddReviewScreen(gameId: widget.gameId),
                   ),
                 );
               },

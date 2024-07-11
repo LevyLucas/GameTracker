@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/register_screen.dart';
+import 'screens/manage_genres_screen.dart';
 import 'providers/game_provider.dart';
 import 'providers/review_provider.dart';
 import 'providers/user_provider.dart';
@@ -30,6 +31,7 @@ class GamesTrackerApp extends StatelessWidget {
           '/': (context) => LoginScreen(),
           '/dashboard': (context) => DashboardScreen(),
           '/register': (context) => RegisterScreen(),
+          '/manage_genres': (context) => ManageGenresScreen(),
         },
       ),
     );

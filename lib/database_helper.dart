@@ -175,4 +175,23 @@ class DatabaseHelper {
       return null;
     }
   }
+
+  Future<void> addGenre(String name) async {
+    final db = await database;
+    await db.insert('genre', {'name': name});
+  }
+
+  Future<List<Map<String, dynamic>>> getGenres() async {
+    final db = await database;
+    return await db.query('genre');
+  }
+
+  Future<List<Map<String, dynamic>>> getGameGenres(int gameId) async {
+    final db = await database;
+    return await db.rawQuery('''
+      SELECT g.name FROM genre g
+      INNER JOIN game_genre gg ON gg.genre_id = g.id
+      WHERE gg.game_id = ?
+    ''', [gameId]);
+  }
 }
