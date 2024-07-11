@@ -56,7 +56,7 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (gameDetails == null) {
-            return Center(child: Text('Game not found'));
+            return Center(child: Text('Jogo não encontrado'));
           } else {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,12 +80,12 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        'Release Date: ${gameDetails!['release_date']}',
+                        'Data de Lançamento: ${gameDetails!['release_date']}',
                         style: TextStyle(fontSize: 16),
                       ),
                       SizedBox(height: 10),
                       Text(
-                        'Genres: ${gameGenres?.map((genre) => genre['name']).join(', ') ?? 'None'}',
+                        'Genero(s): ${gameGenres?.map((genre) => genre['name']).join(', ') ?? 'None'}',
                         style: TextStyle(fontSize: 16),
                       ),
                     ],

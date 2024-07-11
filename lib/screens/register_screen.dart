@@ -30,7 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 decoration: InputDecoration(labelText: 'Name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
+                    return 'Insira seu nome';
                   }
                   return null;
                 },
@@ -40,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 decoration: InputDecoration(labelText: 'Email'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
+                    return 'Insira seu email';
                   }
                   return null;
                 },
@@ -51,7 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
+                    return 'Insira sua senha';
                   }
                   return null;
                 },
@@ -67,7 +67,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Provider.of<UserProvider>(context, listen: false).setUserId(userId);
                       Navigator.pushReplacementNamed(context, '/dashboard');
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Email already exists')));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Email já existe')));
                     }
                   }
                 },

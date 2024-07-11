@@ -58,7 +58,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: Consumer<GameProvider>(
         builder: (context, gameProvider, child) {
           if (gameProvider.games.isEmpty) {
-            return Center(child: Text('No games found'));
+            return Center(child: Text('Nenhum jogo encontrado'));
           } else {
             return ListView.builder(
               itemCount: gameProvider.games.length,

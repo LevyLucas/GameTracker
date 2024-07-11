@@ -41,7 +41,7 @@ class _ManageGenresScreenState extends State<ManageGenresScreen> {
                         decoration: InputDecoration(labelText: 'Genre Name'),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter a genre name';
+                            return 'Insira um genero';
                           }
                           return null;
                         },
@@ -77,7 +77,7 @@ class _ManageGenresScreenState extends State<ManageGenresScreen> {
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No genres found'));
+                    return Center(child: Text('Nenhum genero encontrado'));
                   } else {
                     return ListView.builder(
                       itemCount: snapshot.data!.length,

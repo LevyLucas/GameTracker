@@ -138,7 +138,7 @@ class DatabaseHelper {
       return await db
           .insert('user', {'name': name, 'email': email, 'password': password});
     } catch (e) {
-      return -1; // Indica que o usuário já existe
+      return -1;
     }
   }
 

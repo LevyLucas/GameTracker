@@ -43,7 +43,7 @@ class _RecentReviewsScreenState extends State<RecentReviewsScreen> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No recent reviews'));
+            return Center(child: Text('Sem reviews recentes'));
           } else {
             final reviews = snapshot.data!;
             return ListView.builder(

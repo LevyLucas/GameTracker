@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: InputDecoration(labelText: 'Email'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
+                    return 'Insira seu email';
                   }
                   return null;
                 },
@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
+                    return 'Insira sua senha';
                   }
                   return null;
                 },
@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Provider.of<UserProvider>(context, listen: false).setUserId(userId);
                       Navigator.pushReplacementNamed(context, '/dashboard');
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid email or password')));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Email ou Senha incorretos')));
                     }
                   }
                 },

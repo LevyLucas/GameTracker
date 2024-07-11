@@ -46,7 +46,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a score';
+                    return 'Insira uma pontuação';
                   }
                   return null;
                 },
@@ -57,7 +57,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                 decoration: InputDecoration(labelText: 'Description'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a description';
+                    return 'Insira uma descrição';
                   }
                   return null;
                 },

@@ -59,7 +59,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
                 decoration: InputDecoration(labelText: 'Name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a name';
+                    return 'Insira um nome';
                   }
                   return null;
                 },
@@ -70,7 +70,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
                 decoration: InputDecoration(labelText: 'Description'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a description';
+                    return 'Insira uma descrição';
                   }
                   return null;
                 },
@@ -81,7 +81,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
                 decoration: InputDecoration(labelText: 'Release Date'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a release date';
+                    return 'Insira uma data de lançamento';
                   }
                   return null;
                 },
@@ -103,7 +103,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
                 },
                 validator: (value) {
                   if (value == null) {
-                    return 'Please select a genre';
+                    return 'Insira um genero';
                   }
                   return null;
                 },
