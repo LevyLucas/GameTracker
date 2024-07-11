@@ -27,9 +27,13 @@ class ReviewProvider with ChangeNotifier {
     fetchReviews(review['game_id']);
   }
 
-  Future<void> deleteReview(int id, int gameId) async {
+  Future<void> deleteReview(int id) async {
     final db = await _dbHelper.database;
-    await db.delete('review', where: 'id = ?', whereArgs: [id]);
-    fetchReviews(gameId);
+    final review = await db.query('review', where: 'id = ?', whereArgs: [id]);
+    if (review.isNotEmpty) {
+      final gameId = review.first['game_id'];
+      await db.delete('review', where: 'id = ?', whereArgs: [id]);
+      fetchReviews(gameId as int);
+    }
   }
 }
