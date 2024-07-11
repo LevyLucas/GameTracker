@@ -114,12 +114,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             _selectedGenre = value;
                           });
                         },
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 8.0,
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(width: 10),
                     Expanded(
                       child: TextFormField(
-                        decoration: InputDecoration(labelText: 'Min Score'),
+                        decoration: InputDecoration(
+                          labelText: 'Min Score',
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 8.0,
+                          ),
+                        ),
                         keyboardType: TextInputType.number,
                         onChanged: (value) {
                           setState(() {
@@ -131,7 +153,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     SizedBox(width: 10),
                     Expanded(
                       child: TextFormField(
-                        decoration: InputDecoration(labelText: 'Max Score'),
+                        decoration: InputDecoration(
+                          labelText: 'Max Score',
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 8.0,
+                          ),
+                        ),
                         keyboardType: TextInputType.number,
                         onChanged: (value) {
                           setState(() {
@@ -151,12 +184,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: InputDecorator(
                           decoration: InputDecoration(
                             labelText: 'Start Date',
-                            border: OutlineInputBorder(),
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 8.0,
+                            ),
                           ),
                           child: Text(
                             _startDate != null
                                 ? DateFormat.yMd().format(_startDate!)
                                 : 'Select date',
+                            style: TextStyle(
+                              color: Colors.black54,
+                            ),
                           ),
                         ),
                       ),
@@ -168,12 +212,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: InputDecorator(
                           decoration: InputDecoration(
                             labelText: 'End Date',
-                            border: OutlineInputBorder(),
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 8.0,
+                            ),
                           ),
                           child: Text(
                             _endDate != null
                                 ? DateFormat.yMd().format(_endDate!)
                                 : 'Select date',
+                            style: TextStyle(
+                              color: Colors.black54,
+                            ),
                           ),
                         ),
                       ),
@@ -184,7 +239,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ElevatedButton(
                   onPressed: () {
                     Provider.of<GameProvider>(context, listen: false).fetchGames(
-                      genreId: _selectedGenre != null ? int.parse(_selectedGenre!) : null,
+                      genreId: _selectedGenre != null
+                          ? int.parse(_selectedGenre!)
+                          : null,
                       minScore: _minScore,
                       maxScore: _maxScore,
                       startDate: _startDate,
@@ -192,6 +249,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     );
                   },
                   child: Text('Search'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueGrey[900],
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 12.0,
+                    ),
+                    textStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -206,37 +274,60 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     itemCount: gameProvider.games.length,
                     itemBuilder: (context, index) {
                       final game = gameProvider.games[index];
-                      return ListTile(
-                        title: Text(game['name']),
-                        subtitle: Text('Average Score: ${(game['avg_score'] != null ? game['avg_score'].toStringAsFixed(1) : 'N/A')}'),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => GameDetailsScreen(gameId: game['id'] as int)),
-                          );
-                        },
-                        trailing: userId != null && game['user_id'] == userId
-                            ? Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.edit),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => AddEditGameScreen(game: game)),
-                                      );
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () {
-                                      Provider.of<GameProvider>(context, listen: false).deleteGame(game['id'] as int);
-                                    },
-                                  ),
-                                ],
-                              )
-                            : null,
+                      return Card(
+                        elevation: 4.0,
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8.0,
+                        ),
+                        child: ListTile(
+                          title: Text(
+                            game['name'],
+                            style: TextStyle(
+                              color: Colors.blueGrey[900],
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle: Text(
+                            'Average Score: ${(game['avg_score'] != null ? game['avg_score'].toStringAsFixed(1) : 'N/A')}',
+                            style: TextStyle(
+                              color: Colors.blueGrey[700],
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    GameDetailsScreen(gameId: game['id'] as int),
+                              ),
+                            );
+                          },
+                          trailing: userId != null && game['user_id'] == userId
+                              ? Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.edit, color: Colors.blueGrey),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => AddEditGameScreen(game: game),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.delete, color: Colors.red),
+                                      onPressed: () {
+                                        Provider.of<GameProvider>(context, listen: false).deleteGame(game['id'] as int);
+                                      },
+                                    ),
+                                  ],
+                                )
+                              : null,
+                        ),
                       );
                     },
                   );
@@ -255,6 +346,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 );
               },
               child: Icon(Icons.add),
+              backgroundColor: Colors.blueGrey[900],
             )
           : null,
     );

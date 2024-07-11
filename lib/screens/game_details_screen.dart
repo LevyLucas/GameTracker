@@ -23,6 +23,7 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
   void initState() {
     super.initState();
     _loadGameDetailsFuture = _loadGameDetails();
+    Provider.of<ReviewProvider>(context, listen: false).fetchReviews(widget.gameId);
   }
 
   Future<void> _loadGameDetails() async {
@@ -56,101 +57,143 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (gameDetails == null) {
-            return Center(child: Text('Jogo não encontrado'));
+            return Center(child: Text('Game not found'));
           } else {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        gameDetails!['name'],
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    color: Colors.blueGrey[900],
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          gameDetails!['name'],
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        gameDetails!['description'],
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Data de Lançamento: ${gameDetails!['release_date']}',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Genero(s): ${gameGenres?.map((genre) => genre['name']).join(', ') ?? 'None'}',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ),
-                ),
-                Divider(),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    'Reviews',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                        SizedBox(height: 10),
+                        Text(
+                          gameDetails!['description'],
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white70,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Icon(Icons.date_range, color: Colors.white70),
+                            SizedBox(width: 5),
+                            Text(
+                              'Release Date: ${gameDetails!['release_date']}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Icon(Icons.category, color: Colors.white70),
+                            SizedBox(width: 5),
+                            Text(
+                              'Genre(s): ${gameGenres?.map((genre) => genre['name']).join(', ') ?? 'None'}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Consumer<ReviewProvider>(
+                  Divider(color: Colors.blueGrey),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      'Reviews',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blueGrey[900],
+                      ),
+                    ),
+                  ),
+                  Consumer<ReviewProvider>(
                     builder: (context, reviewProvider, child) {
                       final reviews = reviewProvider.reviews;
                       return ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
                         itemCount: reviews.length,
                         itemBuilder: (context, index) {
                           final review = reviews[index];
-                          return ListTile(
-                            title: Text('Score: ${review['score']}'),
-                            subtitle: Text(review['description']),
-                            trailing: userId != null &&
-                                    userId == review['user_id']
-                                ? Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(Icons.edit),
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  AddReviewScreen(
-                                                review: review,
-                                                gameId: widget.gameId,
+                          return Card(
+                            elevation: 4.0,
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 8.0,
+                            ),
+                            child: ListTile(
+                              title: Text(
+                                'Score: ${review['score']}',
+                                style: TextStyle(
+                                  color: Colors.blueGrey[900],
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Text(
+                                review['description'],
+                                style: TextStyle(color: Colors.blueGrey[700]),
+                              ),
+                              trailing: userId != null &&
+                                      userId == review['user_id']
+                                  ? Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.edit, color: Colors.blueGrey),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AddReviewScreen(
+                                                  review: review,
+                                                  gameId: widget.gameId,
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                      IconButton(
-                                        icon: Icon(Icons.delete),
-                                        onPressed: () {
-                                          Provider.of<ReviewProvider>(context,
-                                                  listen: false)
-                                              .deleteReview(review['id']);
-                                        },
-                                      ),
-                                    ],
-                                  )
-                                : null,
+                                            );
+                                          },
+                                        ),
+                                        IconButton(
+                                          icon: Icon(Icons.delete, color: Colors.red),
+                                          onPressed: () {
+                                            Provider.of<ReviewProvider>(context,
+                                                    listen: false)
+                                                .deleteReview(review['id']);
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                  : null,
+                            ),
                           );
                         },
                       );
                     },
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           }
         },
@@ -161,12 +204,12 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        AddReviewScreen(gameId: widget.gameId),
+                    builder: (context) => AddReviewScreen(gameId: widget.gameId),
                   ),
                 );
               },
               child: Icon(Icons.add),
+              backgroundColor: Colors.blueGrey[900],
             )
           : null,
     );
