@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../database_helper.dart';
+import 'package:intl/intl.dart';
 
 class GameProvider with ChangeNotifier {
   DatabaseHelper _dbHelper = DatabaseHelper();
@@ -8,15 +9,42 @@ class GameProvider with ChangeNotifier {
 
   List<Map<String, dynamic>> get games => _games;
 
-  Future<void> fetchGames() async {
+  Future<void> fetchGames({int? genreId, double? minScore, double? maxScore, DateTime? startDate, DateTime? endDate}) async {
     final db = await _dbHelper.database;
-    final games = await db.query('game');
-    List<Map<String, dynamic>> updatedGames = [];
-    for (var game in games) {
-      double avgScore = await _dbHelper.getAverageScore(game['id'] as int);
-      updatedGames.add({...game, 'avg_score': avgScore});
+    String query = '''
+      SELECT g.*, AVG(r.score) as avg_score 
+      FROM game g 
+      LEFT JOIN review r ON g.id = r.game_id
+      LEFT JOIN game_genre gg ON g.id = gg.game_id
+      WHERE 1 = 1
+    ''';
+    List<dynamic> args = [];
+
+    if (genreId != null) {
+      query += ' AND gg.genre_id = ?';
+      args.add(genreId);
     }
-    _games = updatedGames;
+    if (minScore != null) {
+      query += ' AND r.score >= ?';
+      args.add(minScore);
+    }
+    if (maxScore != null) {
+      query += ' AND r.score <= ?';
+      args.add(maxScore);
+    }
+    if (startDate != null) {
+      query += ' AND g.release_date >= ?';
+      args.add(DateFormat('yyyy-MM-dd').format(startDate));
+    }
+    if (endDate != null) {
+      query += ' AND g.release_date <= ?';
+      args.add(DateFormat('yyyy-MM-dd').format(endDate));
+    }
+
+    query += ' GROUP BY g.id';
+
+    final games = await db.rawQuery(query, args);
+    _games = games;
     notifyListeners();
   }
 
