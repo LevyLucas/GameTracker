@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/game_provider.dart';
-import '../providers/user_provider.dart';
 import '../database_helper.dart';
+import '../providers/user_provider.dart';
 
 class AddEditGameScreen extends StatefulWidget {
   final Map<String, dynamic>? game;
@@ -28,7 +28,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
       _name = widget.game!['name'];
       _description = widget.game!['description'];
       _releaseDate = widget.game!['release_date'];
-      _selectedGenre = widget.game!['genre_id'];
+      _loadSelectedGenre();
     }
     _loadGenres();
   }
@@ -41,9 +41,20 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
     });
   }
 
+  Future<void> _loadSelectedGenre() async {
+    final dbHelper = DatabaseHelper();
+    final gameGenres = await dbHelper.getGameGenres(widget.game!['id']);
+    if (gameGenres.isNotEmpty) {
+      setState(() {
+        _selectedGenre = gameGenres.first['id'];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final userId = Provider.of<UserProvider>(context).userId;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.game == null ? 'Add Game' : 'Edit Game'),
@@ -119,15 +130,13 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
                         'description': _description,
                         'release_date': _releaseDate,
                         'user_id': userId,
-                        'genre_id': _selectedGenre,
-                      });
+                      }, _selectedGenre!);
                     } else {
                       Provider.of<GameProvider>(context, listen: false).updateGame(widget.game!['id'], {
                         'name': _name,
                         'description': _description,
                         'release_date': _releaseDate,
-                        'genre_id': _selectedGenre,
-                      });
+                      }, _selectedGenre!);
                     }
                     Navigator.pop(context);
                   }

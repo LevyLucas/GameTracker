@@ -20,21 +20,28 @@ class GameProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addGame(Map<String, dynamic> game) async {
+  Future<void> addGame(Map<String, dynamic> game, int genreId) async {
     final db = await _dbHelper.database;
-    await db.insert('game', game);
+    int gameId = await db.insert('game', game);
+    await db.insert('game_genre', {
+      'game_id': gameId,
+      'genre_id': genreId,
+    });
     fetchGames();
   }
 
-  Future<void> updateGame(int id, Map<String, dynamic> game) async {
+  Future<void> updateGame(int id, Map<String, dynamic> game, int genreId) async {
     final db = await _dbHelper.database;
     await db.update('game', game, where: 'id = ?', whereArgs: [id]);
+    await db.update('game_genre', {'genre_id': genreId},
+        where: 'game_id = ?', whereArgs: [id]);
     fetchGames();
   }
 
   Future<void> deleteGame(int id) async {
     final db = await _dbHelper.database;
     await db.delete('game', where: 'id = ?', whereArgs: [id]);
+    await db.delete('game_genre', where: 'game_id = ?', whereArgs: [id]);
     fetchGames();
   }
 }
