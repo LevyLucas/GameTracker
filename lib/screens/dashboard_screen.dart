@@ -67,7 +67,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       MaterialPageRoute(builder: (context) => GameDetailsScreen(gameId: game['id'] as int)),
                     );
                   },
-                  trailing: userId != null
+                  trailing: userId != null && userId == game['user_id']
                       ? Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
