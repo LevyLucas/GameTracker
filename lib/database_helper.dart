@@ -9,11 +9,14 @@ class DatabaseHelper {
   factory DatabaseHelper() => _instance;
   DatabaseHelper._internal();
 
-  late Database _database;
+  Database? _database;
 
   Future<Database> get database async {
+    if (_database != null) {
+      return _database!;
+    }
     _database = await _initDatabase();
-    return _database;
+    return _database!;
   }
 
   Future<Database> _initDatabase() async {
@@ -24,6 +27,9 @@ class DatabaseHelper {
       path,
       version: 1,
       onCreate: _onCreate,
+      onOpen: (db) async {
+        await _insertInitialData(db);
+      },
     );
   }
 
@@ -82,54 +88,64 @@ class DatabaseHelper {
       )
     ''');
     print('Created table review');
+  }
 
-    // Inserindo dados iniciais nas tabelas
-    await db.execute('''
-      INSERT INTO user(name, email, password) VALUES('Teste 1', 'teste1@teste', '123456');
-      INSERT INTO user(name, email, password) VALUES('Teste 2', 'teste2@teste', '123456');
-      INSERT INTO user(name, email, password) VALUES('Teste 3', 'teste3@teste', '123456');
-      INSERT INTO user(name, email, password) VALUES('Teste 4', 'teste4@teste', '123456');
-      INSERT INTO user(name, email, password) VALUES('Teste 5', 'teste5@teste', '123456');
-    ''');
-    print('Inserted initial users');
+  Future<void> _insertInitialData(Database db) async {
+    // Inserindo dados iniciais nas tabelas, se ainda não estiverem presentes
+    var result = await db.rawQuery('SELECT COUNT(*) as count FROM user');
+    int userCount = Sqflite.firstIntValue(result) ?? 0;
 
-    await db.execute('''
-      INSERT INTO genre(name) VALUES('Aventura');
-      INSERT INTO genre(name) VALUES('Ação');
-      INSERT INTO genre(name) VALUES('RPG');
-      INSERT INTO genre(name) VALUES('Plataforma');
-      INSERT INTO genre(name) VALUES('Metroidvania');
-      INSERT INTO genre(name) VALUES('Rogue Lite');
-      INSERT INTO genre(name) VALUES('Survival Horror');
-      INSERT INTO genre(name) VALUES('Mundo Aberto');
-    ''');
-    print('Inserted initial genres');
+    if (userCount == 0) {
+      print('Inserting initial data...');
+      
+      await db.insert('user', {'name': 'Teste 1', 'email': 'teste1@teste', 'password': '123456'});
+      await db.insert('user', {'name': 'Teste 2', 'email': 'teste2@teste', 'password': '123456'});
+      await db.insert('user', {'name': 'Teste 3', 'email': 'teste3@teste', 'password': '123456'});
+      await db.insert('user', {'name': 'Teste 4', 'email': 'teste4@teste', 'password': '123456'});
+      await db.insert('user', {'name': 'Teste 5', 'email': 'teste5@teste', 'password': '123456'});
+      print('Inserted initial users');
 
-    await db.execute('''
-      INSERT INTO game(user_id, name, description, release_date) VALUES(1, 'God of War', 'O jogo começa após a morte da segunda esposa de Kratos e mãe de Atreus, Faye. Seu último desejo era que suas cinzas fossem espalhadas no pico mais alto dos nove reinos nórdicos. Antes de iniciar sua jornada, Kratos é confrontado por um homem misterioso com poderes divinos.', '2018-04-18');
-      INSERT INTO game(user_id, name, description, release_date) VALUES(1, 'Resident Evil 4', 'Resident Evil 4 é um jogo de terror e sobrevivência no qual os jogadores terão que enfrentar situações extremas de medo. Apesar dos vários elementos de terror, o jogo é equilibrado com muita ação e uma experiência de jogo bastante variada.', '2023-03-24');
-      INSERT INTO game(user_id, name, description, release_date) VALUES(2, 'Persona 5', 'Transferido para a Academia Shujin, em Tóquio, Ren Amamiya está prestes a entrar no segundo ano do colegial. Após um certo incidente, sua Persona desperta, e junto com seus amigos eles formam os Ladrões-Fantasma de Corações, para roubar a fonte dos desejos deturpados dos adultos e assim reformar seus corações.', '2017-04-17');
-      INSERT INTO game(user_id, name, description, release_date) VALUES(3, 'Horizon Zero Dawn', 'Horizon Zero Dawn é um RPG eletrônico de ação em que os jogadores controlam a protagonista Aloy, uma caçadora e arqueira, em um cenário futurista, um mundo aberto pós-apocalíptico dominado por criaturas mecanizadas como robôs dinossauros.', '2017-02-28');
-    ''');
-    print('Inserted initial games');
+      await db.insert('genre', {'name': 'Aventura'});
+      await db.insert('genre', {'name': 'Ação'});
+      await db.insert('genre', {'name': 'RPG'});
+      await db.insert('genre', {'name': 'Plataforma'});
+      await db.insert('genre', {'name': 'Metroidvania'});
+      await db.insert('genre', {'name': 'Rogue Lite'});
+      await db.insert('genre', {'name': 'Survival Horror'});
+      await db.insert('genre', {'name': 'Mundo Aberto'});
+      await db.insert('genre', {'name': 'MOBA'});
+      print('Inserted initial genres');
 
-    await db.execute('''
-      INSERT INTO game_genre(game_id, genre_id) VALUES(1, 1);
-      INSERT INTO game_genre(game_id, genre_id) VALUES(2, 7);
-      INSERT INTO game_genre(game_id, genre_id) VALUES(3, 3);
-      INSERT INTO game_genre(game_id, genre_id) VALUES(4, 2);
-      INSERT INTO game_genre(game_id, genre_id) VALUES(4, 3);
-      INSERT INTO game_genre(game_id, genre_id) VALUES(4, 8);
-    ''');
-    print('Inserted initial game_genre relationships');
+      await db.insert('game', {'user_id': 1, 'name': 'God of War', 'description': 'O jogo começa após a morte da segunda esposa de Kratos e mãe de Atreus, Faye. Seu último desejo era que suas cinzas fossem espalhadas no pico mais alto dos nove reinos nórdicos. Antes de iniciar sua jornada, Kratos é confrontado por um homem misterioso com poderes divinos.', 'release_date': '2018-04-18'});
+      await db.insert('game', {'user_id': 1, 'name': 'Resident Evil 4', 'description': 'Resident Evil 4 é um jogo de terror e sobrevivência no qual os jogadores terão que enfrentar situações extremas de medo. Apesar dos vários elementos de terror, o jogo é equilibrado com muita ação e uma experiência de jogo bastante variada.', 'release_date': '2023-03-24'});
+      await db.insert('game', {'user_id': 2, 'name': 'Persona 5', 'description': 'Transferido para a Academia Shujin, em Tóquio, Ren Amamiya está prestes a entrar no segundo ano do colegial. Após um certo incidente, sua Persona desperta, e junto com seus amigos eles formam os Ladrões-Fantasma de Corações, para roubar a fonte dos desejos deturpados dos adultos e assim reformar seus corações.', 'release_date': '2017-04-17'});
+      await db.insert('game', {'user_id': 3, 'name': 'Horizon Zero Dawn', 'description': 'Horizon Zero Dawn é um RPG eletrônico de ação em que os jogadores controlam a protagonista Aloy, uma caçadora e arqueira, em um cenário futurista, um mundo aberto pós-apocalíptico dominado por criaturas mecanizadas como robôs dinossauros.', 'release_date': '2017-02-28'});
+      await db.insert('game', {'user_id': 4, 'name': 'The Last of Us Part II', 'description': 'Cinco anos após os eventos do primeiro jogo, Ellie embarca em uma nova jornada em busca de vingança e justiça, enfrentando desafios emocionais e físicos.', 'release_date': '2020-06-19'});
+      await db.insert('game', {'user_id': 5, 'name': 'League of Legends', 'description': 'League of Legends, também conhecido como LOL, é um jogo de estratégia em que duas equipes de cinco poderosos Campeões se enfrentam para destruir a base uma da outra. Escolha entre mais de 140 Campeões para realizar jogadas épicas, assegurar abates e destruir torres conforme você luta até a vitória.', 'release_date': '2009-10-27'});
+      print('Inserted initial games');
 
-    await db.execute('''
-      INSERT INTO review(user_id, game_id, score, description, date) VALUES(1, 1, 9.5, 'Teste', '2024-06-20');
-      INSERT INTO review(user_id, game_id, score, description, date) VALUES(2, 1, 9.0, 'Teste', '2024-06-20');
-      INSERT INTO review(user_id, game_id, score, description, date) VALUES(3, 1, 8.5, 'Teste', '2024-06-20');
-      INSERT INTO review(user_id, game_id, score, description, date) VALUES(4, 1, 9.6, 'Teste', '2024-06-20');
-    ''');
-    print('Inserted initial reviews');
+      await db.insert('game_genre', {'game_id': 1, 'genre_id': 1});
+      await db.insert('game_genre', {'game_id': 2, 'genre_id': 7});
+      await db.insert('game_genre', {'game_id': 3, 'genre_id': 3});
+      await db.insert('game_genre', {'game_id': 4, 'genre_id': 2});
+      await db.insert('game_genre', {'game_id': 4, 'genre_id': 3});
+      await db.insert('game_genre', {'game_id': 4, 'genre_id': 8});
+      await db.insert('game_genre', {'game_id': 5, 'genre_id': 1});
+      await db.insert('game_genre', {'game_id': 5, 'genre_id': 7});
+      await db.insert('game_genre', {'game_id': 6, 'genre_id': 9});
+      print('Inserted initial game_genre relationships');
+
+      await db.insert('review', {'user_id': 1, 'game_id': 1, 'score': 9.5, 'description': 'Incrível história e jogabilidade.', 'date': '2024-06-20'});
+      await db.insert('review', {'user_id': 2, 'game_id': 1, 'score': 9.0, 'description': 'Gráficos impressionantes.', 'date': '2024-06-21'});
+      await db.insert('review', {'user_id': 3, 'game_id': 1, 'score': 8.5, 'description': 'Ótima mecânica de combate.', 'date': '2024-06-22'});
+      await db.insert('review', {'user_id': 4, 'game_id': 1, 'score': 9.6, 'description': 'Narrativa envolvente.', 'date': '2024-06-23'});
+      await db.insert('review', {'user_id': 2, 'game_id': 2, 'score': 10.0, 'description': 'Perfeito em todos os sentidos.', 'date': '2024-06-24'});
+      await db.insert('review', {'user_id': 1, 'game_id': 3, 'score': 7.5, 'description': 'Interessante, mas um pouco repetitivo.', 'date': '2024-06-25'});
+      await db.insert('review', {'user_id': 3, 'game_id': 4, 'score': 8.0, 'description': 'Bela direção de arte.', 'date': '2024-06-26'});
+      await db.insert('review', {'user_id': 4, 'game_id': 5, 'score': 9.8, 'description': 'Experiência emocionalmente intensa.', 'date': '2024-06-27'});
+      await db.insert('review', {'user_id': 5, 'game_id': 6, 'score': 4.2, 'description': 'Esse jogo desgraçou a minha vida.', 'date': '2024-06-30'});
+      print('Inserted initial reviews');
+    }
   }
 
   Future<int> registerUser(String name, String email, String password) async {
