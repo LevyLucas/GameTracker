@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/review_provider.dart';
 import '../database_helper.dart';
+import 'package:intl/intl.dart';
 
 class RecentReviewsScreen extends StatefulWidget {
   @override
@@ -50,16 +51,59 @@ class _RecentReviewsScreenState extends State<RecentReviewsScreen> {
               itemCount: reviews.length,
               itemBuilder: (context, index) {
                 final review = reviews[index];
-                return ListTile(
-                  title: Text('Game: ${review['game_name']}'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('User: ${review['user_name']}'),
-                      Text('Score: ${review['score']}'),
-                      Text('Date: ${review['date']}'),
-                      Text('Review: ${review['description']}'),
-                    ],
+                return Card(
+                  elevation: 4.0,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Game: ${review['game_name']}',
+                          style: TextStyle(
+                            color: Colors.blueGrey[900],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'User: ${review['user_name']}',
+                          style: TextStyle(
+                            color: Colors.blueGrey[700],
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'Score: ${review['score']}',
+                          style: TextStyle(
+                            color: Colors.blueGrey[700],
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'Date: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(review['date']))}',
+                          style: TextStyle(
+                            color: Colors.blueGrey[700],
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'Review: ${review['description']}',
+                          style: TextStyle(
+                            color: Colors.blueGrey[600],
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

@@ -103,7 +103,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Flexible(
                         child: DropdownButtonFormField<String>(
                           value: _selectedGenre,
-                          hint: Text('Genre'),
+                          hint: Text('Genero'),
                           items: _genres.map((genre) {
                             return DropdownMenuItem<String>(
                               value: genre['id'].toString(),
@@ -249,9 +249,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         endDate: _endDate,
                       );
                     },
-                    child: Text('Search'),
+                    child: Text('Buscar'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueGrey[900],
+                      backgroundColor: Color.fromARGB(255, 175, 255, 150),
                       padding: EdgeInsets.symmetric(
                         horizontal: 24.0,
                         vertical: 12.0,
@@ -268,7 +268,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Consumer<GameProvider>(
               builder: (context, gameProvider, child) {
                 if (gameProvider.games.isEmpty) {
-                  return Center(child: Text('No games found'));
+                  return Center(child: Text('Nenhum game encontrado'));
                 } else {
                   return ListView.builder(
                     shrinkWrap: true,
@@ -348,7 +348,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 );
               },
               child: Icon(Icons.add),
-              backgroundColor: Colors.blueGrey[900],
+              backgroundColor: Color.fromARGB(255, 175, 255, 150),
             )
           : null,
     );

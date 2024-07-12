@@ -57,7 +57,7 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (gameDetails == null) {
-            return Center(child: Text('Game not found'));
+            return Center(child: Text('Nenhum jogo encontrado'));
           } else {
             return SingleChildScrollView(
               child: Column(
